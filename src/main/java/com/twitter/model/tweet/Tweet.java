@@ -74,15 +74,8 @@ public abstract class Tweet implements Comparable<Tweet> {
         return "TWT_" + contadorId;
     }
 
-    // ---------- Métodos abstractos ----------
-
-    /**
-     * Devuelve el tipo concreto de tweet (ej. "TweetSimple", "Respuesta").
-     * Las subclases deben implementarlo.
-     */
     public abstract String getTipo();
 
-    // ---------- Getters ----------
 
     public String getId() {
         return id;
@@ -100,16 +93,10 @@ public abstract class Tweet implements Comparable<Tweet> {
         return fechaPublicacion;
     }
 
-    /** Vista inmodificable de los hashtags. */
     public List<String> getHashtags() {
         return Collections.unmodifiableList(hashtags);
     }
 
-    // ---------- Comparable, equals, hashCode, toString ----------
-
-    /**
-     * Orden natural por fecha de publicación descendente (más reciente primero).
-     */
     @Override
     public int compareTo(Tweet otro) {
         return otro.fechaPublicacion.compareTo(this.fechaPublicacion);
