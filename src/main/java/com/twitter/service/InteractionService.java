@@ -1,10 +1,10 @@
 package com.twitter.service;
 
 import com.twitter.exception.InteractionException;
-import com.twitter.model.Dm.Mensajedirecto;
+import com.twitter.model.Interaction.Mensajedirecto;
 import com.twitter.model.Interaction.Interaction;
-import com.twitter.model.Like.Like;
-import com.twitter.model.Retweet.Retweet;
+import com.twitter.model.Interaction.Like;
+import com.twitter.model.Interaction.Retweet;
 import com.twitter.model.notification.TipoNotificacion;
 import com.twitter.model.tweet.Tweet;
 import com.twitter.model.user.Usuario;
