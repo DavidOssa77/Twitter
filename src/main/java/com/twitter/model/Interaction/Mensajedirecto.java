@@ -1,6 +1,5 @@
-package com.twitter.model.Dm;
+package com.twitter.model.Interaction;
 
-import com.twitter.model.Interaction.Interaction;
 import com.twitter.model.user.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
