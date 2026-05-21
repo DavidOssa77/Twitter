@@ -1,4 +1,4 @@
-package com.twitter.Presentation;
+package com.twitter;
 
 import com.twitter.exception.InteractionException;
 
@@ -6,14 +6,12 @@ import com.twitter.model.tweet.Respuesta;
 import com.twitter.model.tweet.Tweet;
 import com.twitter.model.tweet.TweetSimple;
 
-import com.twitter.model.user.Moderador;
 import com.twitter.model.user.Usuario;
 import com.twitter.model.user.UsuarioRegular;
 import com.twitter.model.user.UsuarioVerificado;
+import com.twitter.model.user.Moderador;
 
-import com.twitter.service.InteractionService;
-import com.twitter.service.TweetService;
-import com.twitter.service.UsuarioService;
+import com.twitter.service.PlataformaService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +25,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        UsuarioService usuarioService =
-                new UsuarioService();
+        PlataformaService plataforma =
+                PlataformaService.getInstancia();
 
-        TweetService tweetService =
-                new TweetService();
-
-        InteractionService interactionService =
-                InteractionService.getInstancia();
-
-        logger.info("===== INICIO DE PRUEBAS =====");
+        logger.info("===== INICIO =====");
 
         Usuario mateo =
                 new UsuarioRegular(
@@ -63,183 +55,163 @@ public class Main {
                         2
                 );
 
-        logger.info("Usuarios creados");
+        plataforma.registrarUsuario(mateo);
 
-        usuarioService.registrarUsuario(mateo);
-        usuarioService.registrarUsuario(ana);
-        usuarioService.registrarUsuario(admin);
+        plataforma.registrarUsuario(ana);
+
+        plataforma.registrarUsuario(admin);
 
         logger.info(
-                "Usuarios registrados: {}",
-                usuarioService.contarUsuarios()
+                "Usuarios registrados {}",
+                plataforma.contarUsuarios()
         );
 
-        usuarioService.seguirUsuario("U1", "U2");
+        plataforma.seguirUsuario(
+                "U1",
+                "U2"
+        );
 
-        logger.info("Mateo sigue a Ana");
+        Tweet tweet1 =
+                new TweetSimple(
+                        ana,
+                        "Primer tweet",
+                        Arrays.asList(
+                                "#java",
+                                "#poo"
+                        )
+                );
 
-        Tweet tweet1 = new TweetSimple(ana, "Primer tweet del sistema", Arrays.asList("#java", "#twitter"));
+        plataforma.publicarTweet(
+                tweet1
+        );
 
-        tweetService.publicar(tweet1);
+        Tweet respuesta =
+                new Respuesta(
+                        mateo,
+                        "Excelente publicación",
+                        tweet1
+                );
 
-        logger.info("Tweet publicado {}", tweet1.getId());
+        plataforma.publicarTweet(
+                respuesta
+        );
 
-        Tweet respuesta = new Respuesta(mateo, "Excelente publicación", tweet1);
-
-        tweetService.publicar(respuesta);
-
-        logger.info("Respuesta publicada {}", respuesta.getId());
-
-        interactionService.darLike(
+        plataforma.darLike(
                 mateo,
                 tweet1
         );
 
-        interactionService.retweetear(
+        plataforma.retweetear(
                 mateo,
                 tweet1
         );
 
-        interactionService.enviarMensajeDirecto(
+        plataforma.enviarMensajeDirecto(
                 mateo,
                 ana,
                 "Hola Ana"
         );
 
         logger.info(
-                "Likes actuales: {}",
-                interactionService.contarLikes(tweet1)
+                "Likes {}",
+                plataforma.contarLikes(
+                        tweet1
+                )
         );
 
         logger.info(
-                "Retweets actuales: {}",
-                interactionService.contarRetweets(tweet1)
+                "Retweets {}",
+                plataforma.contarRetweets(
+                        tweet1
+                )
         );
-
-        logger.info("===== PRUEBA DOBLE LIKE =====");
 
         try {
 
-            interactionService.darLike(
+            plataforma.darLike(
                     mateo,
                     tweet1
             );
 
-        } catch (InteractionException e) {
-
-            logger.warn(
-                    "Excepción capturada: {}",
-                    e.getMessage()
-            );
         }
 
-        logger.info("===== PRUEBA DM VACÍO =====");
-
-        try {
-
-            interactionService.enviarMensajeDirecto(
-                    mateo,
-                    ana,
-                    "   "
-            );
-
-        } catch (InteractionException e) {
+        catch (
+                InteractionException e
+        ) {
 
             logger.warn(
-                    "Excepción capturada: {}",
+                    "{}",
                     e.getMessage()
             );
+
         }
 
-        logger.info("===== PRUEBA BLOQUEO =====");
-
-        usuarioService.bloquearUsuario(
+        plataforma.bloquearUsuario(
                 "U2",
                 "U1"
         );
 
         try {
 
-            interactionService.enviarMensajeDirecto(
+            plataforma.enviarMensajeDirecto(
                     mateo,
                     ana,
                     "Hola"
             );
 
-        } catch (InteractionException e) {
-
-            logger.warn(
-                    "Excepción capturada: {}",
-                    e.getMessage()
-            );
         }
 
-        usuarioService.desbloquearUsuario(
+        catch (
+                InteractionException e
+        ) {
+
+            logger.warn(
+                    "{}",
+                    e.getMessage()
+            );
+
+        }
+
+        plataforma.desbloquearUsuario(
                 "U2",
                 "U1"
         );
 
-        logger.info("===== PRUEBA SUSPENSIÓN =====");
-
-        usuarioService.suspenderUsuario(
+        plataforma.suspenderUsuario(
                 "U3",
                 "U2"
         );
 
         try {
 
-            interactionService.enviarMensajeDirecto(
+            plataforma.enviarMensajeDirecto(
                     mateo,
                     ana,
-                    "Mensaje después de suspensión"
+                    "Mensaje"
             );
 
-        } catch (InteractionException e) {
+        }
+
+        catch (
+                InteractionException e
+        ) {
 
             logger.warn(
-                    "Excepción capturada: {}",
+                    "{}",
                     e.getMessage()
             );
-        }
 
-        usuarioService.reactivarUsuario(
-                "U3",
-                "U2"
-        );
-
-        logger.info("===== LISTADO FINAL =====");
-
-        for (Usuario usuario :
-                usuarioService.listarUsuarios()) {
-
-            logger.info(
-                    "{}",
-                    usuario
-            );
-        }
-
-        for (Tweet tweet :
-                tweetService.listarTodos()) {
-
-            logger.info(
-                    "{}",
-                    tweet
-            );
         }
 
         logger.info(
-                "Interacciones registradas: {}",
-                interactionService.getRegistro()
-                        .size()
+                "Tweets publicados {}",
+                plataforma.contarTweets()
         );
 
         logger.info(
-                "Tweets publicados: {}",
-                tweetService.cantidadTweets()
+                "===== FIN ====="
         );
 
-        logger.info(
-                "===== FIN DE PRUEBAS ====="
-        );
     }
+
 }
