@@ -11,17 +11,14 @@ import java.util.Objects;
 
 public abstract class Tweet implements Comparable<Tweet> {
 
-    /** Contador estático para generar IDs únicos durante la ejecución. */
-    private static long contadorId = 0;
 
-    /** Formato de fecha para representaciones legibles. */
+    private static double contadorId = 0;
+
     private static final DateTimeFormatter FORMATO_FECHA =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    /** Límite absoluto de caracteres (UsuarioVerificado puede llegar a este máximo). */
     private static final int LIMITE_MAXIMO_CARACTERES = 4000;
 
-    // ---------- Atributos ----------
 
     private final String id;
     private final Usuario autor;
@@ -40,7 +37,7 @@ public abstract class Tweet implements Comparable<Tweet> {
         this.fechaPublicacion = LocalDateTime.now();
         this.hashtags = (hashtags == null)
                 ? new ArrayList<>()
-                : new ArrayList<>(hashtags);  // copia defensiva
+                : new ArrayList<>(hashtags);
     }
 
 
@@ -69,7 +66,7 @@ public abstract class Tweet implements Comparable<Tweet> {
         }
     }
 
-    private static synchronized String generarId() {
+    private static String generarId() {
         contadorId++;
         return "TWT_" + contadorId;
     }
