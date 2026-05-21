@@ -19,41 +19,22 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 public class Main {
-
-    private static final Logger logger =
-            LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-
         PlataformaService plataforma =
                 PlataformaService.getInstancia();
 
-        logger.info("===== INICIO =====");
+        logger.info(" Inicio ");
 
         Usuario mateo =
-                new UsuarioRegular(
-                        "U1",
-                        "mateo",
-                        "mateo@email.com",
-                        "Mateo"
-                );
+                new UsuarioRegular("U1", "mateo", "mateo@email.com", "Mateo");
 
         Usuario ana =
-                new UsuarioVerificado(
-                        "U2",
-                        "ana",
-                        "ana@email.com",
-                        "Ana"
-                );
+                new UsuarioVerificado("U2", "ana", "ana@email.com", "Ana");
 
         Usuario admin =
-                new Moderador(
-                        "U3",
-                        "admin",
-                        "admin@email.com",
-                        "Administrador",
-                        2
-                );
+                new Moderador("U3", "admin", "admin@email.com", "Administrador", 2);
 
         plataforma.registrarUsuario(mateo);
 
@@ -61,157 +42,65 @@ public class Main {
 
         plataforma.registrarUsuario(admin);
 
-        logger.info(
-                "Usuarios registrados {}",
-                plataforma.contarUsuarios()
-        );
+        logger.info("Usuarios registrados {}", plataforma.contarUsuarios());
 
-        plataforma.seguirUsuario(
-                "U1",
-                "U2"
-        );
+        plataforma.seguirUsuario("U1", "U2");
 
-        Tweet tweet1 =
-                new TweetSimple(
-                        ana,
-                        "Primer tweet",
-                        Arrays.asList(
-                                "#java",
-                                "#poo"
-                        )
-                );
+        Tweet tweet1 = new TweetSimple( ana, "Primer tweet", Arrays.asList("#java", "#poo"));
 
-        plataforma.publicarTweet(
-                tweet1
-        );
+        plataforma.publicarTweet(tweet1);
 
-        Tweet respuesta =
-                new Respuesta(
-                        mateo,
-                        "Excelente publicación",
-                        tweet1
-                );
+        Tweet respuesta = new Respuesta(mateo, "Excelente publicación", tweet1);
 
-        plataforma.publicarTweet(
-                respuesta
-        );
+        plataforma.publicarTweet(respuesta);
 
-        plataforma.darLike(
-                mateo,
-                tweet1
-        );
+        plataforma.darLike(mateo, tweet1);
 
-        plataforma.retweetear(
-                mateo,
-                tweet1
-        );
+        plataforma.retweetear(mateo, tweet1);
 
-        plataforma.enviarMensajeDirecto(
-                mateo,
-                ana,
-                "Hola Ana"
-        );
+        plataforma.enviarMensajeDirecto(mateo, ana, "Hola Ana");
 
-        logger.info(
-                "Likes {}",
-                plataforma.contarLikes(
-                        tweet1
-                )
-        );
+        logger.info("Likes {}", plataforma.contarLikes(tweet1));
 
-        logger.info(
-                "Retweets {}",
-                plataforma.contarRetweets(
-                        tweet1
-                )
-        );
+        logger.info("Retweets {}", plataforma.contarRetweets(tweet1));
 
         try {
-
-            plataforma.darLike(
-                    mateo,
-                    tweet1
-            );
-
+            plataforma.darLike(mateo, tweet1);
         }
-
-        catch (
-                InteractionException e
-        ) {
-
+        catch (InteractionException e) {
             logger.warn(
                     "{}",
-                    e.getMessage()
-            );
+                    e.getMessage());
 
         }
 
-        plataforma.bloquearUsuario(
-                "U2",
-                "U1"
-        );
+        plataforma.bloquearUsuario("U2", "U1");
+
+        try {plataforma.enviarMensajeDirecto(mateo, ana, "Hola");
+        }
+        catch (InteractionException e) {
+            logger.warn(
+                    "{}",
+                    e.getMessage());
+        }
+
+        plataforma.desbloquearUsuario("U2", "U1");
+
+        plataforma.suspenderUsuario("U3", "U2");
 
         try {
-
-            plataforma.enviarMensajeDirecto(
-                    mateo,
-                    ana,
-                    "Hola"
-            );
-
+            plataforma.enviarMensajeDirecto(mateo, ana, "Mensaje");
         }
 
-        catch (
-                InteractionException e
-        ) {
-
+        catch (InteractionException e) {
             logger.warn(
                     "{}",
-                    e.getMessage()
-            );
-
+                    e.getMessage());
         }
 
-        plataforma.desbloquearUsuario(
-                "U2",
-                "U1"
-        );
+        logger.info("Tweets publicados {}", plataforma.contarTweets());
 
-        plataforma.suspenderUsuario(
-                "U3",
-                "U2"
-        );
-
-        try {
-
-            plataforma.enviarMensajeDirecto(
-                    mateo,
-                    ana,
-                    "Mensaje"
-            );
-
-        }
-
-        catch (
-                InteractionException e
-        ) {
-
-            logger.warn(
-                    "{}",
-                    e.getMessage()
-            );
-
-        }
-
-        logger.info(
-                "Tweets publicados {}",
-                plataforma.contarTweets()
-        );
-
-        logger.info(
-                "===== FIN ====="
-        );
-
+        logger.info(" Final ");
     }
 
 }
