@@ -1,4 +1,4 @@
-package com.twitter;
+package com.twitter.Presentation;
 
 import com.twitter.exception.InteractionException;
 
